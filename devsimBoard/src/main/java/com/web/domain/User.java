@@ -1,6 +1,7 @@
 package com.web.domain;
 
 import com.web.domain.enums.BoardType;
+import com.web.domain.enums.SocialType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,17 +31,26 @@ public class User implements Serializable {
     private String email;
 
     @Column
+    private String principal;
+
+    @Column
+    @Enumerated(EnumType.STRING)
+    private SocialType socialType;
+
+    @Column
     private LocalDateTime createdDate;
 
     @Column
     private LocalDateTime updatedDate;
 
     @Builder
-    public User(String name, String password, String email,
+    public User(String name, String password, String email, String principal, SocialType socialType,
                  LocalDateTime createdDate, LocalDateTime updatedDate) {
         this.name = name;
         this.password = password;
         this.email = email;
+        this.principal = principal;
+        this.socialType = socialType;
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
     }
