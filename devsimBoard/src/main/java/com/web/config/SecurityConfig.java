@@ -2,6 +2,7 @@ package com.web.config;
 
 import com.web.domain.enums.SocialType;
 import com.web.oauth.ClientResources;
+import com.web.oauth.UserTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -44,6 +45,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers("/", "/login/**", "/css/**", "/images/**", "/js/**", "/console/**").permitAll()
+                .antMatchers("/facebook").hasAuthority(FACEBOOK.getRoleType())
+                .antMatchers("/google").hasAuthority(GOOGLE.getRoleType())
+                .antMatchers("/kakao").hasAuthority(KAKAO.getRoleType())
                 .anyRequest().authenticated()
                 .and()
                 .headers().frameOptions().disable()
@@ -89,7 +93,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         OAuth2ClientAuthenticationProcessingFilter filter =
                 new OAuth2ClientAuthenticationProcessingFilter(path); //인증이 수행될 경로를 넣어 OAuth2 클라이언트용 인증 처리 필터를 생성
         OAuth2RestTemplate template = new OAuth2RestTemplate(client.getClient(), oAuth2ClientContext);
-        filter.setRestTemplate(template);
+        filter.setRestTemplate(template); //권한 서버와의 통신을 위해?? Template 생성?
         filter.setTokenServices(new UserTokenService(client, socialType));
         filter.setAuthenticationSuccessHandler(((request, response, authentication) -> response.sendRedirect("/" + socialType.getValue() + "complete"))); //인증 성공 경우 redirect 경로
         filter.setAuthenticationFailureHandler(((request, response, exception) -> response.sendRedirect("/error")));

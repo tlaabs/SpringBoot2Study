@@ -22,9 +22,9 @@ google:
     userInfoUri: https://www.googleapis.com/oauth2/v2/userinfo
 
 kakao:
-  client :
+  client:
     clientId:  910c0796e5b1f8b613c28bd91be7d382
-      accessTokenUri: https://kauth.kakao.com/oauth/token
+    accessTokenUri: https://kauth.kakao.com/oauth/token
     userAuthorizationUri: https://kauth.kakao.com/oauth/authorize
   resource:
     userInfoUri : https://kapi.kakao.com/v1/user/me
