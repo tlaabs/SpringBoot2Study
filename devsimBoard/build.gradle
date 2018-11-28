@@ -1,6 +1,6 @@
 buildscript {
 	ext {
-		springBootVersion = '1.5.14.RELEASE'
+		springBootVersion = '2.0.3.RELEASE'
 	}
 	repositories {
 		mavenCentral()
@@ -25,10 +25,13 @@ repositories {
 
 
 dependencies {
-	implementation('org.springframework.security.oauth:spring-security-oauth2')
+	implementation('org.springframework.security:spring-security-oauth2-client')
+	implementation('org.springframework.security:spring-security-oauth2-jose')
 	implementation('org.springframework.boot:spring-boot-starter-data-jpa')
 	implementation('org.springframework.boot:spring-boot-starter-thymeleaf')
+	implementation('org.springframework.boot:spring-boot-starter-security')
 	implementation('org.springframework.boot:spring-boot-starter-web')
+	
 	runtimeOnly('org.springframework.boot:spring-boot-devtools')
 	runtimeOnly('com.h2database:h2')
 	compileOnly('org.projectlombok:lombok')

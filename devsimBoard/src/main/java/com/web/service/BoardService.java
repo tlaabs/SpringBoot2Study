@@ -23,14 +23,12 @@ public class BoardService {
      */
 
     public Page<Board> findBoardList(Pageable pageable){
-//        pageable = PageRequest.of(pageable.getPageNumber() <= 0 ? 0 : pageable.getPageNumber() -1, pageable.getPageSize());
+        pageable = PageRequest.of(pageable.getPageNumber() <= 0 ? 0 : pageable.getPageNumber() -1, pageable.getPageSize());
         //finAll에서 실제로 모든 글을 다 가져오지는 않겠지? Pageable통해 필요한 것만 가져오라고 예상.(나중에 알아보자)
-//        return boardRepository.findAll(pageable);
-        return null;
+        return boardRepository.findAll(pageable);
     }
 
     public Board findBoardByIdx(Long idx){
-//        return boardRepository.findById(idx).orElse(new Board());
-        return null;
+        return boardRepository.findById(idx).orElse(new Board());
     }
 }

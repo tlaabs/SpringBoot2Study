@@ -2,17 +2,9 @@ package com.web.controller;
 
 import com.web.annotation.SocialUser;
 import com.web.domain.User;
-import com.web.domain.enums.SocialType;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-
-import javax.servlet.http.HttpSession;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 
 @Controller
 public class LoginController {
@@ -22,9 +14,8 @@ public class LoginController {
         return "login";
     }
 
-    //AOP 사용
-    @GetMapping(value = "/{facebook|google|kakao}/complete")
-    public String loginComplete(@SocialUser User user) {
+    @GetMapping("/loginSuccess")
+    public String loginComplete(@SocialUser User user){
         return "redirect:/board/list";
     }
 
