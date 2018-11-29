@@ -33,7 +33,6 @@ import static com.web.domain.enums.SocialType.*;
 
 @Configuration
 @EnableWebSecurity
-
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override

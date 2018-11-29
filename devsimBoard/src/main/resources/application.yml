@@ -1,4 +1,8 @@
 spring:
+  h2:
+    console:
+      enabled : true
+      path: /console
   security:
     oauth2:
       client:
@@ -12,4 +16,4 @@ spring:
 custom:
   oauth2:
     kakao:
-      client-id: 910c0796e5b1f8b613c28bd91be7d382
+      client-id: d546778ec26ccf4e0fcf2e453c0f5915

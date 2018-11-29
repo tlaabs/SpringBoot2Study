@@ -13,7 +13,7 @@ public enum CustomOAuth2Provider {
                     ClientAuthenticationMethod.POST, DEFAULT_LOGIN_REDIRECT_URL);
             builder.scope("profile");
             builder.authorizationUri("https://kauth.kakao.com/oauth/authorize");
-            builder.tokenUri("https://kauth.com/oauth/token");
+            builder.tokenUri("https://kauth.kakao.com/oauth/token");
             builder.userInfoUri("https://kapi.kakao.com/v1/user/me");
             builder.userNameAttributeName("id");
             builder.clientName("Kakao");
