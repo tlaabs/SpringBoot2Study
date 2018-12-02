@@ -1,8 +1,14 @@
 spring:
+  jpa:
+    hibernate:
+      ddl-auto: create
   h2:
     console:
-      enabled : true
-      path: /console
+      enabled: false
+    path: /console
+  devtools:
+    livereload:
+      enabled: true
   security:
     oauth2:
       client:
@@ -13,6 +19,11 @@ spring:
           facebook:
             client-id: 1927214790702719
             client-secret: af47d69a3b226b188d5d89614dc55689
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/test
+    username: root
+    password: root
+    driver-class-name: com.mysql.jdbc.Driver
 custom:
   oauth2:
     kakao:
