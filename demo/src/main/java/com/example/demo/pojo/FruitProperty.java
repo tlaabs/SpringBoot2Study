@@ -11,7 +11,6 @@ import java.util.Map;
 intellij lombok cannot find symbol 에러 해결
 https://stackoverflow.com/questions/9424364/cant-compile-project-when-im-using-lombok-under-intellij-idea
  */
-
 @Data
 @Component
 @ConfigurationProperties("fruit")
