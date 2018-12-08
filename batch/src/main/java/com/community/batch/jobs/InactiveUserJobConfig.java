@@ -12,13 +12,17 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.batch.item.database.JpaPagingItemReader;
 import org.springframework.batch.item.support.ListItemReader;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.persistence.EntityManagerFactory;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,15 +45,16 @@ public class InactiveUserJobConfig {
     }
 
     @Bean
-    public Step inactiveJobStep(StepBuilderFactory stepBuilderFactory){
+    public Step inactiveJobStep(StepBuilderFactory stepBuilderFactory, ListItemReader<User> inactiveUserReader){
         return stepBuilderFactory.get("inactiveUserStep")
-                .<User, User> chunk(10) //커밋단위
-                .reader(inactiveUserJpaReader())
+                .<User, User> chunk(CHUNK_SIZE) //커밋단위
+                .reader(inactiveUserReader)
                 .processor(inactiveUserProcessor())
                 .writer(inactiveUserWriter())
                 .build();
     }
 
+    /*
     @Bean(destroyMethod = "")
     @StepScope
     public JpaPagingItemReader<User> inactiveUserJpaReader(){
@@ -74,13 +79,15 @@ public class InactiveUserJobConfig {
         jpaPagingItemReader.setPageSize(CHUNK_SIZE);
         return jpaPagingItemReader;
     }
+    */
 
     @Bean
     @StepScope //각 Step의 실행마다 새로 빈을 만들기 때문에 지연 생성이 가능하다?
-    public ListItemReader<User> inactiveUserReader(){
-        List<User> oldUsers =
+    public ListItemReader<User> inactiveUserReader(@Value("#{jobParameters[nowDate]}") Date nowDate, UserRepository userRepository){
+        LocalDateTime now = LocalDateTime.ofInstant(nowDate.toInstant(), ZoneId.systemDefault());
+        List<User> inactiveUsers =
                 userRepository.findByUpdatedDateBeforeAndStatusEquals(LocalDateTime.now().minusYears(1), UserStatus.ACTIVE);
-        return new ListItemReader<>(oldUsers);
+        return new ListItemReader<>(inactiveUsers);
     }
 
     public ItemProcessor<User, User> inactiveUserProcessor(){
@@ -93,8 +100,13 @@ public class InactiveUserJobConfig {
         };
     }
 
-    public ItemWriter<User> inactiveUserWriter(){
-        return ((List<? extends User> users) -> userRepository.saveAll(users));
-    }
+//    public ItemWriter<User> inactiveUserWriter(){
+//        return ((List<? extends User> users) -> userRepository.saveAll(users));
+//    }
 
+    private JpaItemWriter<User> inactiveUserWriter(){
+        JpaItemWriter<User> jpaItemWriter = new JpaItemWriter<>();
+        jpaItemWriter.setEntityManagerFactory(entityManagerFactory);
+        return jpaItemWriter;
+    }
 }
