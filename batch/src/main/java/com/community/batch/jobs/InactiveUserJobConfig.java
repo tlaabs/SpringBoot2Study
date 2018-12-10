@@ -2,6 +2,7 @@ package com.community.batch.jobs;
 
 import com.community.batch.domain.User;
 import com.community.batch.domain.enums.UserStatus;
+import com.community.batch.jobs.inactive.InactiveJobExecutionDecider;
 import com.community.batch.jobs.inactive.listener.InactiveStepListener;
 import com.community.batch.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -10,6 +11,10 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.core.job.builder.FlowBuilder;
+import org.springframework.batch.core.job.flow.Flow;
+import org.springframework.batch.core.job.flow.FlowExecution;
+import org.springframework.batch.core.job.flow.FlowExecutionStatus;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.batch.item.support.ListItemReader;
@@ -33,11 +38,22 @@ public class InactiveUserJobConfig {
     private UserRepository userRepository;
 
     @Bean
-    public Job inactiveUserJob(JobBuilderFactory jobBuilderFactory, Step inactiveJobStep){
+    public Job inactiveUserJob(JobBuilderFactory jobBuilderFactory,Flow inactiveJobFlow){
         return jobBuilderFactory.get("inactiveUserJob")
                 .preventRestart()
-                .start(inactiveJobStep)
+                .start(inactiveJobFlow)
+                .end()
                 .build();
+    }
+
+    @Bean
+    public Flow inactiveJobFlow(Step inactiveJobStep){
+        FlowBuilder<Flow> flowBuilder =new FlowBuilder<>("inactiveJobFlow"); //원하는 Flow 이름
+        return flowBuilder
+                .start(new InactiveJobExecutionDecider())//맨 처음 시작하도록
+                .on(FlowExecutionStatus.FAILED.getName()).end()
+                .on(FlowExecutionStatus.COMPLETED.getName()).to(inactiveJobStep)
+                .end();
     }
 
     @Bean
