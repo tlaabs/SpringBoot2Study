@@ -113,10 +113,6 @@ public class InactiveUserJobConfig {
         };
     }
 
-//    public ItemWriter<User> inactiveUserWriter(){
-//        return ((List<? extends User> users) -> userRepository.saveAll(users));
-//    }
-
     private JpaItemWriter<User> inactiveUserWriter(){
         JpaItemWriter<User> jpaItemWriter = new JpaItemWriter<>();
         jpaItemWriter.setEntityManagerFactory(entityManagerFactory);
